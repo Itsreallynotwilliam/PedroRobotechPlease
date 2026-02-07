@@ -37,7 +37,7 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             //drive train
             float xDirection = gamepad1.left_stick_x;
             float yDirection = gamepad1.left_stick_y;
-            float rotation   = gamepad1.right_stick_x;
+            float rotation   = -gamepad1.right_stick_x;
             if (isRobotCentric) {
                 telemetry.addLine("DT Robot Centric");
                 boolean boostSpeed = gamepad1.right_bumper;

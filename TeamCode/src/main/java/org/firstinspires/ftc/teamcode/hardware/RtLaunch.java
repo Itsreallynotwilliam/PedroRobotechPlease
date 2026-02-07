@@ -16,6 +16,7 @@ public class RtLaunch {
 
     private boolean m_launchToggle = false;
     private boolean m_lastLaunchToggle = false;
+    final double launcher_auton = 860;
     final double LAUNCHER_TARGET_VELOCITY = 900;
     final double LAUNCHER_MIN_VELOCITY = 1075;
     public RtLaunch(DcMotorEx parLaunchMotor1, DcMotorEx parLaunchMotor2, Telemetry parTelemetry) {
@@ -38,6 +39,13 @@ public class RtLaunch {
         if (hwExists()) {
             m_launchMotor1.setVelocity(LAUNCHER_TARGET_VELOCITY);
             m_launchMotor2.setVelocity(-1*LAUNCHER_TARGET_VELOCITY);
+        }
+    }
+    public void launchArtifactAuton() {
+        m_telemetry.addLine("RtLaunch launch");
+        if (hwExists()) {
+            m_launchMotor1.setVelocity(launcher_auton);
+            m_launchMotor2.setVelocity(-1*launcher_auton);
         }
     }
 
