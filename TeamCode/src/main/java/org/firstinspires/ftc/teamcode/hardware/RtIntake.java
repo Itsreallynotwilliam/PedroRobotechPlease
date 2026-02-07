@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardware.RtLed;
 import org.firstinspires.ftc.teamcode.utilities.RtTypes;
 
 
@@ -61,9 +60,11 @@ public class RtIntake {
                 power = 0;
                 m_led.setColor(RtTypes.rtColor.OFF);
             }
+            else {
+                m_led.setColor("orange");
+            }
             m_midtakeServo1.setPower(power);
             m_midtakeServo2.setPower(-power);
-            m_led.setColor("orange");
         }
 
     }
