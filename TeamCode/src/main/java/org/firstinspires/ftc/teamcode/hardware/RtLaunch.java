@@ -16,7 +16,7 @@ public class RtLaunch {
 
     private boolean m_launchToggle = false;
     private boolean m_lastLaunchToggle = false;
-    final double launcher_auton = 860;
+    final double launcher_auton = 620;
     final double LAUNCHER_TARGET_VELOCITY = 900;
     final double LAUNCHER_MIN_VELOCITY = 1075;
     public RtLaunch(DcMotorEx parLaunchMotor1, DcMotorEx parLaunchMotor2, Telemetry parTelemetry) {

@@ -6,6 +6,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.util.Timer;
@@ -14,7 +15,7 @@ import com.pedropathing.util.Timer;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.utilities.RtTypes;
 
-@TeleOp
+@Autonomous
 public class Robotech_Auton_V2 extends OpMode {
     Robotech m_robotech;
     private Follower follower;
@@ -29,19 +30,23 @@ public class Robotech_Auton_V2 extends OpMode {
         DRIVE_STARTPOS_SHOOT_POS,
         SHOOT_PRELOAD,
         TRANSITION,
-        PICKUP
+        PICKUP,
+        SECOND_SHOOT_MOVE,
+        SHOOT_PRELOAD2
+
     }
 
     PathState pathState;
 
     private final Pose startPose = new Pose(24,126,Math.toRadians(-37));
     private final Pose shootPose = new Pose(52,115,Math.toRadians(-31));
-    private final Pose transitionPose = new Pose(52,84,Math.toRadians(180));
-    private final Pose pickupPose = new Pose(13,84,Math.toRadians(180));
+    private final Pose transitionPose = new Pose(73,84,Math.toRadians(180));
+    private final Pose pickupPose = new Pose(17,84,Math.toRadians(180));
+    private final Pose secondShootPose = new Pose(52,115,Math.toRadians(-31));
 
 
 
-    private PathChain driveStartPosShootPos,TransitionPos,PickUpPos;
+    private PathChain driveStartPosShootPos,TransitionPos,PickUpPos,SecondShootPos;
 
 
     public void buildpaths(){
@@ -54,9 +59,14 @@ public class Robotech_Auton_V2 extends OpMode {
                 .addPath(new BezierLine(shootPose, transitionPose))
                 .setLinearHeadingInterpolation(shootPose.getHeading(), transitionPose.getHeading())
                 .build();
+
        PickUpPos = follower.pathBuilder()
                .addPath(new BezierLine(transitionPose,pickupPose))
                .setLinearHeadingInterpolation(transitionPose.getHeading(), pickupPose.getHeading())
+               .build();
+       SecondShootPos = follower.pathBuilder()
+               .addPath(new BezierLine(pickupPose,secondShootPose))
+               .setLinearHeadingInterpolation(pickupPose.getHeading(), shootPose.getHeading())
                .build();
 
     }
@@ -83,9 +93,9 @@ public class Robotech_Auton_V2 extends OpMode {
                 break;
 
             case TRANSITION:
-                if (!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>14) {
-
-                    m_robotech.rtIntake.stop();
+                if (!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>12) {
+                    m_robotech.rtLaunch.stop();
+//                    m_robotech.rtIntake.stop();
                     m_robotech.rtIntake.runMidtake(false);
                     follower.followPath(TransitionPos,0.8, true);
 
@@ -97,12 +107,37 @@ public class Robotech_Auton_V2 extends OpMode {
             case PICKUP:
                 if (!follower.isBusy()) {
                     m_robotech.rtIntake.retrieveArtifact();
-                    m_robotech.rtIntake.runMidtake(false);
-                    follower.followPath(PickUpPos,08, true);
+                    m_robotech.rtIntake.runMidtake(true);
+                    follower.followPath(PickUpPos,0.8, true);
 
                     telemetry.addLine("Following pickup path");
+                    setPathState(PathState.SECOND_SHOOT_MOVE);
                     // Add next state here if you continue the cycle
                     // setPathState(PathState.DRIVE_BACK_TO_SCORE);
+                }
+                break;
+            case SECOND_SHOOT_MOVE:
+                if(!follower.isBusy()){
+                    m_robotech.rtLaunch.launchArtifactAuton();
+                    m_robotech.rtIntake.stop();
+                    m_robotech.rtIntake.runMidtake(false);
+                    follower.followPath(SecondShootPos,true);
+                    telemetry.addLine("Transitioning to shoot");
+                    setPathState(PathState.SHOOT_PRELOAD2);
+                }
+                break;
+
+            case SHOOT_PRELOAD2:
+                if (!follower.isBusy()) {
+                    // Flywheel + intake logic
+                    m_robotech.rtLaunch.launchArtifactAuton();
+                    m_robotech.rtIntake.retrieveArtifact();
+                    m_robotech.rtIntake.runMidtake(true);
+
+                    telemetry.addLine("Second Time Shooting");
+
+                    // Move to next path
+//                    setPathState(PathState.Second_PICKUP);
                 }
                 break;
 
