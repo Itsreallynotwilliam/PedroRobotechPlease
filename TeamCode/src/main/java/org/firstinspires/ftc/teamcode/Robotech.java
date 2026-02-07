@@ -41,6 +41,7 @@ public class Robotech {
 
     private IMU m_imu;
     private Servo m_ledServo;
+    private Servo m_ledServo2;
 
     // sensors
     private TouchSensor m_touchSensor;
@@ -94,6 +95,7 @@ public class Robotech {
     public RtLift rtLift;
     public RtClaw rtClaw;
     public RtLed rtLedLight;
+    public RtLed rtLedLight2;
     public RtIntake rtIntake;
     public RtLaunch rtLaunch;
 
@@ -115,7 +117,8 @@ public class Robotech {
         //the device names MUST match config on driver hub!
 
         m_imu                 = m_hardwareMap.get(IMU.class,                 "imu");
-        m_ledServo            = m_hardwareMap.tryGet(Servo.class,            "servoLedP0");
+        m_ledServo            = m_hardwareMap.tryGet(Servo.class,            "servoLed1");
+        m_ledServo2           = m_hardwareMap.tryGet(Servo.class,            "servoLed2");
         m_touchSensor         = m_hardwareMap.tryGet(TouchSensor.class,      "digTouchP01");
         m_revColorSensorV3    = m_hardwareMap.tryGet(RevColorSensorV3.class, "i2cColorP1");
         m_cameraName          = m_hardwareMap.tryGet(WebcamName.class,       "robotech-cam");
@@ -177,13 +180,14 @@ public class Robotech {
         //hardware
         rtDriveTrain  = new RtDrive(m_dtLeftBackDcMotor, m_dtRightBackDcMotor,
                                     m_dtRightFrontDcMotor, m_dtLeftFrontDcMotor, m_telemetry, m_imu);
-        rtIntake      = new RtIntake(m_intakeMotor, m_midtakeServo1, m_midtakeServo2, m_telemetry);
+        rtLedLight    = new RtLed(m_ledServo, m_telemetry);
+        rtLedLight2   = new RtLed(m_ledServo2, m_telemetry);
+        rtIntake      = new RtIntake(m_intakeMotor, m_midtakeServo1, m_midtakeServo2, m_telemetry, rtLedLight2);
         rtLaunch      = new RtLaunch(m_launchMotor1, m_launchMotor2, m_telemetry);
         rtWrist       = new RtWrist(m_leftWristServo, m_rightWristServo, m_telemetry);
         rtLift        = new RtLift(m_leftLiftDcMotor, m_rightLiftDcMotor,
                                     m_top1DcMotor, m_top2DcMotor, m_telemetry );
         rtClaw        = new RtClaw(m_leftClawServo, m_rightClawServo, m_telemetry);
-        rtLedLight    = new RtLed(m_ledServo, m_telemetry);
 
         //good-to-go
         m_telemetry.addData( "","Alliance Color = %s / Init Pos = %s",

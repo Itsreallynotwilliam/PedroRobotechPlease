@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardware.RtLed;
+import org.firstinspires.ftc.teamcode.utilities.RtTypes;
 
 
 public class RtIntake {
@@ -11,6 +12,7 @@ public class RtIntake {
     private DcMotor m_intakeMotor;
     private CRServo m_midtakeServo1;
     private CRServo m_midtakeServo2;
+    private RtLed m_led;
 
     private boolean m_intakeRetrieve = false;
     private boolean m_intakeExpel = false;
@@ -19,11 +21,12 @@ public class RtIntake {
     private boolean m_lastIntakeRetrieveToggle = false;
     private boolean m_lastIntakeExpelToggle = false;
     private boolean m_lastMidtakeOnToggle = false;
-    public RtIntake(DcMotor parIntakeMotor, CRServo parMidtakeServo1, CRServo parMidtakeServo2, Telemetry parTelemetry) {
+    public RtIntake(DcMotor parIntakeMotor, CRServo parMidtakeServo1, CRServo parMidtakeServo2, Telemetry parTelemetry, RtLed parLed) {
         m_intakeMotor   = parIntakeMotor;
         m_midtakeServo1 = parMidtakeServo1;
         m_midtakeServo2 = parMidtakeServo2;
         m_telemetry     = parTelemetry;
+        m_led           = parLed;
     }
 
     public void retrieveArtifact(){
@@ -56,9 +59,11 @@ public class RtIntake {
             if(!parOn)
             {
                 power = 0;
+                m_led.setColor(RtTypes.rtColor.OFF);
             }
             m_midtakeServo1.setPower(power);
             m_midtakeServo2.setPower(-power);
+            m_led.setColor("orange");
         }
 
     }
@@ -126,6 +131,13 @@ public class RtIntake {
         {
             exists = false;
             m_telemetry.addLine("RtIntake Midtake2 HW NOT CONNECTED");
+            //m_telemetry.update();
+        }
+
+        if (m_led == null)
+        {
+            exists = false;
+            m_telemetry.addLine("RtLed Midtake HW NOT CONNECTED");
             //m_telemetry.update();
         }
         return exists;
