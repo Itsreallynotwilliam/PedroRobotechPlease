@@ -26,7 +26,7 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
 
         while(!isStopRequested()) {
 
-            m_robotech.rtLedLight.setColor(RtTypes.rtColor.AZURE);
+//            m_robotech.rtLedLight.setColor(RtTypes.rtColor.AZURE);
             //toggle between robot centric and field centric when x button is pushed
             boolean fieldCentricToggle = gamepad1.x;
             if (!lastRobotCentricToggleValue && fieldCentricToggle){
@@ -71,8 +71,9 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             }
 
             //april tag detection
-            /*if (m_robotech.rtCamera.detectedAprilTag())
+            if (m_robotech.rtCamera.detectedAprilTag())
             {
+
                 m_robotech.rtLedLight.setColor(RtTypes.rtColor.GREEN);
                 m_robotech.rtLog.print("AprilTag #", "%d %s",
                         m_robotech.rtCamera.m_aprilTagId,
@@ -82,7 +83,7 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             {
               m_robotech.rtLedLight.setColor(RtTypes.rtColor.OFF);
             }
-            */
+            
 
             telemetry.update();
         }

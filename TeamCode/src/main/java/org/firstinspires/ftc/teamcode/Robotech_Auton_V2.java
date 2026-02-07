@@ -14,13 +14,13 @@ import com.pedropathing.util.Timer;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.utilities.RtTypes;
-
+import org.firstinspires.ftc.teamcode.Robotech;
 @Autonomous
 public class Robotech_Auton_V2 extends OpMode {
     Robotech m_robotech;
     private Follower follower;
     private Timer pathTimer, opModeTimer;
-    
+
 //    private boolean shotstriggered = false;
 
     public enum PathState{
@@ -38,6 +38,9 @@ public class Robotech_Auton_V2 extends OpMode {
 
     PathState pathState;
 
+//     if (m_robotech.m_initialPosition == RtTypes.alli.AT_GOAL) {
+//
+//    }
     private final Pose startPose = new Pose(24,126,Math.toRadians(-37));
     private final Pose shootPose = new Pose(52,115,Math.toRadians(-31));
     private final Pose transitionPose = new Pose(73,84,Math.toRadians(180));
