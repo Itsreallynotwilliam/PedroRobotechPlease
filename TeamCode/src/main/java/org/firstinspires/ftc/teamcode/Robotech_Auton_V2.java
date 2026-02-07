@@ -18,7 +18,7 @@ public class Robotech_Auton_V2 extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
 
-    private boolean shotstriggered = false;
+//    private boolean shotstriggered = false;
 
     public enum PathState{
         // START POSITION_ENDPOSITION
@@ -30,8 +30,8 @@ public class Robotech_Auton_V2 extends OpMode {
 
     PathState pathState;
 
-    private final Pose startPose = new Pose(123,123,Math.toRadians(36));
-    private final Pose shootPose = new Pose(94,95,Math.toRadians(36));
+    private final Pose startPose = new Pose(24,126,Math.toRadians(-37));
+    private final Pose shootPose = new Pose(93,100,Math.toRadians(-27));
 
     private PathChain driveStartPosShootPos;
 
@@ -54,8 +54,11 @@ public class Robotech_Auton_V2 extends OpMode {
                 if (!follower.isBusy()){
 
                     //TODO add logic to flywheel shooter
+
                     m_robotech.rtLaunch.launchArtifact();
-                    m_robotech.rtIntake.runMidtake();
+                    m_robotech.rtIntake.retrieveArtifact();
+                    m_robotech.rtIntake.runMidtake(true);
+
                     telemetry.addLine("Done Path 1");
                     //Transition next state
                 }
@@ -70,7 +73,7 @@ public class Robotech_Auton_V2 extends OpMode {
         pathState = newState;
         pathTimer.resetTimer();
 
-        shotstriggered = false;
+//        shotstriggered = false;
     }
 
 
@@ -89,6 +92,7 @@ public class Robotech_Auton_V2 extends OpMode {
     }
     public void start(){
         m_robotech.rtLedLight.setColor(RtTypes.rtColor.AZURE);
+        m_robotech.rtLaunch.launchArtifact();
         opModeTimer.resetTimer();
         setPathState(pathState);
     }
