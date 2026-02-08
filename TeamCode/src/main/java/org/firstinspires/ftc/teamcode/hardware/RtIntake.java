@@ -135,12 +135,6 @@ public class RtIntake {
             //m_telemetry.update();
         }
 
-        if (m_led == null)
-        {
-            exists = false;
-            m_telemetry.addLine("RtLed Midtake HW NOT CONNECTED");
-            //m_telemetry.update();
-        }
         return exists;
     }
 }
