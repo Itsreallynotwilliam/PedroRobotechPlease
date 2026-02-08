@@ -8,7 +8,6 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.util.Timer;
 
 
@@ -20,7 +19,8 @@ public class Robotech_Auton_V2 extends OpMode {
     Robotech m_robotech;
     private Follower follower;
     private Timer pathTimer, opModeTimer;
-    
+    private int m_allianceIdx;
+
 //    private boolean shotstriggered = false;
 
     public enum PathState{
@@ -38,11 +38,11 @@ public class Robotech_Auton_V2 extends OpMode {
 
     PathState pathState;
 
-    private final Pose startPose = new Pose(24,126,Math.toRadians(-37));
-    private final Pose shootPose = new Pose(52,115,Math.toRadians(-31));
-    private final Pose transitionPose = new Pose(73,84,Math.toRadians(180));
-    private final Pose pickupPose = new Pose(17,84,Math.toRadians(180));
-    private final Pose secondShootPose = new Pose(52,115,Math.toRadians(-31));
+    private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(24, 126, Math.toRadians(-37))};
+    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(52,115,Math.toRadians(-31))};
+    private final Pose[] transitionPose = new Pose[]{new Pose(73,84,Math.toRadians(180)),new Pose(73,84,Math.toRadians(180))};
+    private final Pose[] pickupPose = new Pose[]{new Pose(17,84,Math.toRadians(180)),new Pose(17,84,Math.toRadians(180))};
+    private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(52,115,Math.toRadians(-31))};
 
 
 
@@ -50,23 +50,28 @@ public class Robotech_Auton_V2 extends OpMode {
 
 
     public void buildpaths(){
+        m_allianceIdx = 0; //BLUE
+        if ( m_robotech.m_allianceColor == RtTypes.rtColor.RED) {
+            m_allianceIdx = 1; //RED
+        }
+
         //put ini coordinates for starting pos > ending pose
         driveStartPosShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, shootPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), shootPose.getHeading())
+                .addPath(new BezierLine(startPose[m_allianceIdx], shootPose[m_allianceIdx]))
+                .setLinearHeadingInterpolation(startPose[m_allianceIdx].getHeading(), shootPose[m_allianceIdx].getHeading())
                 .build();
         TransitionPos = follower.pathBuilder()
-                .addPath(new BezierLine(shootPose, transitionPose))
-                .setLinearHeadingInterpolation(shootPose.getHeading(), transitionPose.getHeading())
+                .addPath(new BezierLine(shootPose[m_allianceIdx], transitionPose[m_allianceIdx]))
+                .setLinearHeadingInterpolation(shootPose[m_allianceIdx].getHeading(), transitionPose[m_allianceIdx].getHeading())
                 .build();
 
        PickUpPos = follower.pathBuilder()
-               .addPath(new BezierLine(transitionPose,pickupPose))
-               .setLinearHeadingInterpolation(transitionPose.getHeading(), pickupPose.getHeading())
+               .addPath(new BezierLine(transitionPose[m_allianceIdx],pickupPose[m_allianceIdx]))
+               .setLinearHeadingInterpolation(transitionPose[m_allianceIdx].getHeading(), pickupPose[m_allianceIdx].getHeading())
                .build();
        SecondShootPos = follower.pathBuilder()
-               .addPath(new BezierLine(pickupPose,secondShootPose))
-               .setLinearHeadingInterpolation(pickupPose.getHeading(), shootPose.getHeading())
+               .addPath(new BezierLine(pickupPose[m_allianceIdx],secondShootPose[m_allianceIdx]))
+               .setLinearHeadingInterpolation(pickupPose[m_allianceIdx].getHeading(), shootPose[m_allianceIdx].getHeading())
                .build();
 
     }
@@ -166,7 +171,7 @@ public class Robotech_Auton_V2 extends OpMode {
         m_robotech = new Robotech(hardwareMap, telemetry);
 
         buildpaths();
-        follower.setPose(startPose);
+        follower.setPose(startPose[m_allianceIdx]);
     }
     public void start(){
         m_robotech.rtLedLight.setColor(RtTypes.rtColor.AZURE);
