@@ -61,7 +61,7 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             m_robotech.rtLaunch.launch(launcherToggle);
 
             //evaluate if stop button was pushed
-            boolean stopAllButton = gamepad2.x;
+            boolean stopAllButton = gamepad2.back;
             if (stopAllButton)
             {
                 //stop everything

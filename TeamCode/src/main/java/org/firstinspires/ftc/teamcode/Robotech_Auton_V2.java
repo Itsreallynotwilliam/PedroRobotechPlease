@@ -32,26 +32,29 @@ public class Robotech_Auton_V2 extends OpMode {
         TRANSITION,
         PICKUP,
         SECOND_SHOOT_MOVE,
-        SHOOT_PRELOAD2
+        SHOOT_PRELOAD2,
+        FIELD_CENTRIC
 
     }
 
     PathState pathState;
+    //Pose for Red Alliance
+    //[(121.0, 126.0), (98.0, 108.0), (98.0, 83.500), (128.0, 83.500), (98.0, 108.0), (98.0, 131.0)]
+    private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(121, 126, Math.toRadians(-144))};
+    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(98,108,Math.toRadians(-136))};
+    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(92,83.5,Math.toRadians(140))};
+    private final Pose[] pickupPose = new Pose[]{new Pose(17,83.5,Math.toRadians(180)),new Pose(128,83.5,Math.toRadians(0))};
+    private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(98,108,Math.toRadians(-136))};
+    private final Pose[] fieldCentricPose = new Pose[]{new Pose(52,130,Math.toRadians(180)),new Pose(98,131,Math.toRadians(0))};
 
-    private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(24, 126, Math.toRadians(-37))};
-    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(52,115,Math.toRadians(-31))};
-    private final Pose[] transitionPose = new Pose[]{new Pose(73,84,Math.toRadians(180)),new Pose(73,84,Math.toRadians(180))};
-    private final Pose[] pickupPose = new Pose[]{new Pose(17,84,Math.toRadians(180)),new Pose(17,84,Math.toRadians(180))};
-    private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(52,115,Math.toRadians(-31))};
 
-
-
-    private PathChain driveStartPosShootPos,TransitionPos,PickUpPos,SecondShootPos;
+    private PathChain driveStartPosShootPos,TransitionPos,PickUpPos,SecondShootPos,readyFieldCentricPos;
 
 
     public void buildpaths(){
+
         m_allianceIdx = 0; //BLUE
-        if ( m_robotech.m_allianceColor == RtTypes.rtColor.RED) {
+        if ( Robotech.m_allianceColor == RtTypes.rtColor.RED) {
             m_allianceIdx = 1; //RED
         }
 
@@ -73,7 +76,10 @@ public class Robotech_Auton_V2 extends OpMode {
                .addPath(new BezierLine(pickupPose[m_allianceIdx],secondShootPose[m_allianceIdx]))
                .setLinearHeadingInterpolation(pickupPose[m_allianceIdx].getHeading(), shootPose[m_allianceIdx].getHeading())
                .build();
-
+       readyFieldCentricPos = follower.pathBuilder()
+               .addPath(new BezierLine(shootPose[m_allianceIdx],fieldCentricPose[m_allianceIdx]))
+               .setLinearHeadingInterpolation(shootPose[m_allianceIdx].getHeading(),fieldCentricPose[m_allianceIdx].getHeading())
+               .build();
     }
 
     public void statePathUpdate(){
@@ -142,7 +148,18 @@ public class Robotech_Auton_V2 extends OpMode {
                     telemetry.addLine("Second Time Shooting");
 
                     // Move to next path
-//                    setPathState(PathState.Second_PICKUP);
+                    setPathState(PathState.FIELD_CENTRIC);
+
+                }
+                break;
+            case FIELD_CENTRIC:
+                if(!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>26){
+
+                    m_robotech.rtLaunch.stop();
+                    m_robotech.rtIntake.stop();
+                    m_robotech.rtIntake.runMidtake(false);
+                    follower.followPath(readyFieldCentricPos);
+                    telemetry.addLine("Auton Done! William said hi");
                 }
                 break;
 
@@ -162,13 +179,17 @@ public class Robotech_Auton_V2 extends OpMode {
 
     @Override
     public void init() {
+
         pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
         pathTimer = new Timer();
         opModeTimer = new Timer();
         follower = Constants.createFollower(hardwareMap);
 
+        
         // TODO add in any other init mechanisms
         m_robotech = new Robotech(hardwareMap, telemetry);
+        m_robotech.rtLedLight2.setColor(RtTypes.rtColor.VIOLET);
+        m_robotech.rtLedLight.setColor(RtTypes.rtColor.VIOLET);
 
         buildpaths();
         follower.setPose(startPose[m_allianceIdx]);
