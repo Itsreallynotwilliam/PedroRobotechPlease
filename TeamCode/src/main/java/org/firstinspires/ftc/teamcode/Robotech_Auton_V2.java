@@ -40,9 +40,9 @@ public class Robotech_Auton_V2 extends OpMode {
     PathState pathState;
     //Pose for Red Alliance
     //[(121.0, 126.0), (98.0, 108.0), (98.0, 83.500), (128.0, 83.500), (98.0, 108.0), (98.0, 131.0)]
-    private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(121, 126, Math.toRadians(-144))};
+    private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(121, 126, Math.toRadians(-140))};
     private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(98,108,Math.toRadians(-136))};
-    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(92,83.5,Math.toRadians(140))};
+    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(83,83.5,Math.toRadians(140))};
     private final Pose[] pickupPose = new Pose[]{new Pose(17,83.5,Math.toRadians(180)),new Pose(128,83.5,Math.toRadians(0))};
     private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(98,108,Math.toRadians(-136))};
     private final Pose[] fieldCentricPose = new Pose[]{new Pose(52,130,Math.toRadians(180)),new Pose(98,131,Math.toRadians(0))};
