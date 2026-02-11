@@ -73,15 +73,16 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             //april tag detection
             if (m_robotech.rtCamera.detectedAprilTag())
             {
-                if(m_robotech.rtCamera.m_position[1]<=15 && m_robotech.rtCamera.m_position[1]>=10){
+                if(m_robotech.rtCamera.m_position[2]<=20 && m_robotech.rtCamera.m_position[2]>=15){
                     m_robotech.rtLedLight.setColor(RtTypes.rtColor.BLUE);
                 }else{
                     m_robotech.rtLedLight.setColor(RtTypes.rtColor.GREEN);
                 }
 
-                m_robotech.rtLog.print("AprilTag #", "%d %s",
+                m_robotech.rtLog.print("AprilTag #", "%d %s %f",
                         m_robotech.rtCamera.m_aprilTagId,
-                        m_robotech.rtCamera.m_aprilTagName);
+                        m_robotech.rtCamera.m_aprilTagName,
+                        m_robotech.rtCamera.m_position[2]);
             }
             else
             {

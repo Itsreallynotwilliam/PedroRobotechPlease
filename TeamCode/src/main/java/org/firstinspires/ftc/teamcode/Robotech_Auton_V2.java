@@ -41,10 +41,10 @@ public class Robotech_Auton_V2 extends OpMode {
     //Pose for Red Alliance
     //[(121.0, 126.0), (98.0, 108.0), (98.0, 83.500), (128.0, 83.500), (98.0, 108.0), (98.0, 131.0)]
     private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(121, 126, Math.toRadians(-140))};
-    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(98,108,Math.toRadians(-136))};
-    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(83,83.5,Math.toRadians(140))};
+    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(86,102,Math.toRadians(-141))};
+    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(83,83.5,Math.toRadians(0))};
     private final Pose[] pickupPose = new Pose[]{new Pose(17,83.5,Math.toRadians(180)),new Pose(128,83.5,Math.toRadians(0))};
-    private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(98,108,Math.toRadians(-136))};
+    private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(86,102,Math.toRadians(-141))};
     private final Pose[] fieldCentricPose = new Pose[]{new Pose(52,130,Math.toRadians(180)),new Pose(98,131,Math.toRadians(0))};
 
 
@@ -77,8 +77,8 @@ public class Robotech_Auton_V2 extends OpMode {
                .setLinearHeadingInterpolation(pickupPose[m_allianceIdx].getHeading(), shootPose[m_allianceIdx].getHeading())
                .build();
        readyFieldCentricPos = follower.pathBuilder()
-               .addPath(new BezierLine(shootPose[m_allianceIdx],fieldCentricPose[m_allianceIdx]))
-               .setLinearHeadingInterpolation(shootPose[m_allianceIdx].getHeading(),fieldCentricPose[m_allianceIdx].getHeading())
+               .addPath(new BezierLine(secondShootPose[m_allianceIdx],fieldCentricPose[m_allianceIdx]))
+               .setLinearHeadingInterpolation(secondShootPose[m_allianceIdx].getHeading(),fieldCentricPose[m_allianceIdx].getHeading())
                .build();
     }
 
@@ -153,12 +153,11 @@ public class Robotech_Auton_V2 extends OpMode {
                 }
                 break;
             case FIELD_CENTRIC:
-                if(!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>26){
-
+                if(!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>8){
+                    follower.followPath(readyFieldCentricPos);
                     m_robotech.rtLaunch.stop();
                     m_robotech.rtIntake.stop();
                     m_robotech.rtIntake.runMidtake(false);
-                    follower.followPath(readyFieldCentricPos);
                     telemetry.addLine("Auton Done! William said hi");
                 }
                 break;
