@@ -41,9 +41,9 @@ public class Robotech_Auton_V2 extends OpMode {
     //Pose for Red Alliance
     //[(121.0, 126.0), (98.0, 108.0), (98.0, 83.500), (128.0, 83.500), (98.0, 108.0), (98.0, 131.0)]
     private final Pose[] startPose = new Pose[]{new Pose(24, 126, Math.toRadians(-37)), new Pose(121, 126, Math.toRadians(-140))};
-    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(86,102,Math.toRadians(-141))};
-    private final Pose[] transitionPose = new Pose[]{new Pose(73,83.5,Math.toRadians(180)),new Pose(83,83.5,Math.toRadians(0))};
-    private final Pose[] pickupPose = new Pose[]{new Pose(17,83.5,Math.toRadians(180)),new Pose(128,83.5,Math.toRadians(0))};
+    private final Pose[] shootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)), new Pose(90,101,Math.toRadians(-144))};
+    private final Pose[] transitionPose = new Pose[]{new Pose(73,88.5,Math.toRadians(180)),new Pose(83,85.5,Math.toRadians(0))};
+    private final Pose[] pickupPose = new Pose[]{new Pose(17,88.5,Math.toRadians(180)),new Pose(128,85.5,Math.toRadians(0))};
     private final Pose[] secondShootPose = new Pose[]{new Pose(52,115,Math.toRadians(-31)),new Pose(86,102,Math.toRadians(-141))};
     private final Pose[] fieldCentricPose = new Pose[]{new Pose(52,130,Math.toRadians(180)),new Pose(98,131,Math.toRadians(0))};
 
@@ -104,7 +104,7 @@ public class Robotech_Auton_V2 extends OpMode {
                 break;
 
             case TRANSITION:
-                if (!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>12) {
+                if (!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>10) {
                     m_robotech.rtLaunch.stop();
 //                    m_robotech.rtIntake.stop();
                     m_robotech.rtIntake.runMidtake(false);
@@ -148,12 +148,15 @@ public class Robotech_Auton_V2 extends OpMode {
                     telemetry.addLine("Second Time Shooting");
 
                     // Move to next path
-                    setPathState(PathState.FIELD_CENTRIC);
+                    if (pathTimer.getElapsedTimeSeconds()>8){
+                        setPathState(PathState.FIELD_CENTRIC);
+                    }
+
 
                 }
                 break;
             case FIELD_CENTRIC:
-                if(!follower.isBusy()&& pathTimer.getElapsedTimeSeconds()>8){
+                if(!follower.isBusy()){
                     follower.followPath(readyFieldCentricPos);
                     m_robotech.rtLaunch.stop();
                     m_robotech.rtIntake.stop();

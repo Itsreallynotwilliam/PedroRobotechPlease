@@ -58,6 +58,16 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
 
             //launcher
             boolean launcherToggle = gamepad2.right_bumper;
+
+            boolean launcherFar = gamepad1.x;
+            boolean launcherClose = gamepad1.triangle;
+
+            if(launcherClose){
+                m_robotech.rtLaunch.launchArtifact();
+            }
+            else if(launcherFar){
+                m_robotech.rtLaunch.launchArtifactfar();
+            }
             m_robotech.rtLaunch.launch(launcherToggle);
 
             //evaluate if stop button was pushed
@@ -74,9 +84,9 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             if (m_robotech.rtCamera.detectedAprilTag())
             {
                 if(m_robotech.rtCamera.m_position[2]<=20 && m_robotech.rtCamera.m_position[2]>=15){
-                    m_robotech.rtLedLight.setColor(RtTypes.rtColor.BLUE);
-                }else{
                     m_robotech.rtLedLight.setColor(RtTypes.rtColor.GREEN);
+                }else{
+                    m_robotech.rtLedLight.setColor(RtTypes.rtColor.BLUE);
                 }
 
                 m_robotech.rtLog.print("AprilTag #", "%d %s %f",
@@ -86,7 +96,7 @@ public class Robotech_Teleop_v0 extends LinearOpMode {
             }
             else
             {
-              m_robotech.rtLedLight.setColor(RtTypes.rtColor.OFF);
+              m_robotech.rtLedLight.setColor(RtTypes.rtColor.VIOLET);
             }
             
 
